@@ -1,2 +1,3 @@
 ADD_SUBDIRECTORY(test_pipe_sender)
 ADD_SUBDIRECTORY(test_pipe_receiver)
+ADD_SUBDIRECTORY(test_named_mutex)

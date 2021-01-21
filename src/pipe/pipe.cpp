@@ -1,22 +1,22 @@
 #include "pipe.h"
 #if WIN32
 #include "windows_pipe.h"
-typedef ipc::windows_pipe real_pipe_type;
+typedef ipc::windows_pipe real_type;
 #else
 #include "unix_pipe.h"
-typedef ipc::unix_pipe real_pipe_type;
+typedef ipc::unix_pipe real_type;
 #endif // WIN32
 
-#define CONVERT_TO_REAL_MESSAGE_QUEUE_PTR(ptr)\
-static_cast<real_pipe_type*>(ptr)
+#define CONVERT_TO_REAL_PTR(ptr)\
+static_cast<real_type*>(ptr)
 
-#define CONVERT_TO_REAL_MESSAGE_QUEUE_REF(ptr)\
-(*(static_cast<real_pipe_type*>(ptr)))
+#define CONVERT_TO_REAL_REF(ptr)\
+(*(static_cast<real_type*>(ptr)))
 
-#define CORE CONVERT_TO_REAL_MESSAGE_QUEUE_PTR(m_core)
+#define CORE CONVERT_TO_REAL_PTR(m_core)
 
 ipc::pipe::pipe(const std::string & name)
-    : m_core(new real_pipe_type(name))
+    : m_core(new real_type(name))
 {
 }
 

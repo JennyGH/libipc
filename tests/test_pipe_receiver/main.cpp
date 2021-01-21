@@ -1,5 +1,5 @@
-#include <pipe.h>
-#include <pipe_exception.h>
+#include <pipe/pipe.h>
+#include <pipe/pipe_exception.h>
 
 int main()
 try

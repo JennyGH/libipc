@@ -1,6 +1,8 @@
-PROJECT(libipc)
+PROJECT(test_named_mutex)
 
 ########################## Basic ##########################
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 FILE(GLOB_RECURSE INCLUDE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
@@ -20,12 +22,13 @@ SET(ALL_FILES
 SOURCE_GROUP("Header Files" FILES "${INCLUDE_FILES}")
 SOURCE_GROUP("Source Files" FILES "${SOURCE_FILES}")
 
+
 INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src
 )
 
-ADD_LIBRARY(
+ADD_EXECUTABLE(
     ${PROJECT_NAME}
-    STATIC
     ${ALL_FILES}
 )
 ###########################################################
@@ -33,4 +36,5 @@ ADD_LIBRARY(
 # Link external libraries.
 TARGET_LINK_LIBRARIES(
     ${PROJECT_NAME}
+    libipc
 )
