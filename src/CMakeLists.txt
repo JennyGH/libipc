@@ -49,7 +49,14 @@ ADD_LIBRARY(
 )
 ###########################################################
 
+
+IF(UNIX)
+    SET(EX_LINK_LIBRARIES pthread)
+ELSE(UNIX)
+    SET(EX_LINK_LIBRARIES)
+ENDIF(UNIX)
 # Link external libraries.
 TARGET_LINK_LIBRARIES(
     ${PROJECT_NAME}
+    ${EX_LINK_LIBRARIES}
 )

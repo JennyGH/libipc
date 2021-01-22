@@ -119,8 +119,9 @@ std::string ipc::windows_pipe::receive()
     {
         goto end;
     }
-end:
     return res;
+end:
+    throw ipc::pipe_exception(::GetLastError(), "");
 }
 
 void try_close_handle(HANDLE& hPipe)
