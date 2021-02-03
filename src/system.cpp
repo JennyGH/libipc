@@ -43,7 +43,9 @@ std::string system::get_error_message(int errcode)
         }
     }
 #else
-    res.assign(::strerror(errcode));
+	char buffer[1024] = { 0 };
+	::strerror_r(errcode, buffer, sizeof(buffer));
+    res.assign(buffer);
 #endif // WIN32
     return res;
 }
