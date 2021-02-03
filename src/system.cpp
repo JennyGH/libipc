@@ -43,9 +43,14 @@ std::string system::get_error_message(int errcode)
         }
     }
 #else
-	char buffer[1024] = { 0 };
-	::strerror_r(errcode, buffer, sizeof(buffer));
+	char  buffer[1024] = { 0 };
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+	int ret = ::strerror_r(errcode, buffer, sizeof(buffer));
     res.assign(buffer);
+#else
+	char* str = ::strerror_r(errcode, buffer, sizeof(buffer));
+    res.assign(str);
+#endif // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
 #endif // WIN32
     return res;
 }

@@ -1,5 +1,6 @@
 #include "unix_pipe.h"
 #include "pipe_exception.h"
+#include "../system.h"
 #if !WIN32
 #include <errno.h>
 #include <fcntl.h>
@@ -38,7 +39,7 @@ ipc::unix_pipe::unix_pipe(const std::string & name)
         //printf("mkfifo: %d\n", rv);
         if (0 != rv)
         {
-            throw ipc::pipe_exception(errno, name);
+            throw ipc::pipe_exception(system::get_last_error(), name);
         }
         CORE->fd = ::open(CORE->name.c_str(), O_RDWR);
     }
@@ -49,7 +50,7 @@ ipc::unix_pipe::unix_pipe(const std::string & name)
     //printf("CORE->fd: %d\n", CORE->fd);
     if (-1 == CORE->fd)
     {
-        throw ipc::pipe_exception(errno, name);
+        throw ipc::pipe_exception(system::get_last_error(), name);
     }
 }
 
@@ -69,13 +70,13 @@ void ipc::unix_pipe::send(const std::string & target, const void * data, unsigne
     int fd = ::open(pipeName.c_str(), O_WRONLY);
     if (-1 == fd)
     {
-        throw ipc::pipe_exception(errno, pipeName);
+        throw ipc::pipe_exception(system::get_last_error(), pipeName);
     }
     int rv = ::write(fd, data, size);
     if (-1 == rv)
     {
         ::close(fd);
-        throw ipc::pipe_exception(errno, pipeName);
+        throw ipc::pipe_exception(system::get_last_error(), pipeName);
     }
     ::close(fd);
 }
@@ -84,12 +85,12 @@ std::string ipc::unix_pipe::receive()
 {
     if (-1 == CORE->fd)
     {
-        throw ipc::pipe_exception(errno, CORE->name);
+        throw ipc::pipe_exception(system::get_last_error(), CORE->name);
     }
     std::string res;
     if (-1 == read_all(CORE->fd, res))
     {
-        throw ipc::pipe_exception(errno, CORE->name);
+        throw ipc::pipe_exception(system::get_last_error(), CORE->name);
     }
     return res;
 }

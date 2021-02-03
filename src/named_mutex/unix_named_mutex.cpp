@@ -1,5 +1,6 @@
 #include "unix_named_mutex.h"
 #include "named_mutex_exception.h"
+#include "../system.h"
 #if !WIN32
 #include <errno.h>     /* For errno constants */
 #include <fcntl.h>     /* For O_* constants */
@@ -29,6 +30,7 @@ static inline semophare_ptr_t to_real_type_ptr(void* ptr)
 ipc::unix_named_mutex::unix_named_mutex(const std::string & name)
     : m_core(new semophare_t())
 {
+    int err = 0;
     CORE->sem = NULL;
     CORE->created = false;
     CORE->opened = false;
@@ -42,7 +44,8 @@ ipc::unix_named_mutex::unix_named_mutex(const std::string & name)
         CORE->opened = true;
         return;
     }
-    CONSOLE("Fail to open semophare of \"%s\" with oflag=(O_CREAT | O_EXCL), errno: %d.", name.c_str(), errno);
+    err = system::get_last_error();
+    CONSOLE("Fail to open semophare of \"%s\" with oflag=(O_CREAT | O_EXCL), because: %s(%d).", name.c_str(), system::get_error_message(err).c_str(), err);
     // Try to open existed semophare.
     CORE->sem = ::sem_open(name.empty() ? NULL : name.c_str(), O_EXCL);
     if (NULL != CORE->sem)
@@ -51,11 +54,13 @@ ipc::unix_named_mutex::unix_named_mutex(const std::string & name)
         CORE->opened = true;
         return;
     }
-    CONSOLE("Fail to open semophare of \"%s\" with oflag=O_EXCL, errno: %d.", name.c_str(), errno);
+    err = system::get_last_error();
+    CONSOLE("Fail to open semophare of \"%s\" with oflag=O_EXCL, because: %s(%d).", name.c_str(), system::get_error_message(err).c_str(), err);
 }
 
 ipc::unix_named_mutex::~unix_named_mutex()
 {
+    int err = 0;
     if (NULL == CORE)
     {
         return;
@@ -64,14 +69,17 @@ ipc::unix_named_mutex::~unix_named_mutex()
     {
         int rv = 0;
         rv = ::sem_close(CORE->sem);
-        CONSOLE("Try to close semophare of \"%s\", rv: %d, errno: %d.", CORE->name.c_str(), rv, errno);
+        err = system::get_last_error();
+        CONSOLE("Try to close semophare of \"%s\", rv: %d, because: %s(%d).", CORE->name.c_str(), rv, system::get_error_message(err).c_str(), err);
         rv = ::sem_unlink(CORE->name.empty() ? NULL : CORE->name.c_str());
-        CONSOLE("Try to remove semophare of \"%s\", rv: %d, errno: %d.", CORE->name.c_str(), rv, errno);
+        err = system::get_last_error();
+        CONSOLE("Try to remove semophare of \"%s\", rv: %d, because: %s(%d).", CORE->name.c_str(), rv, system::get_error_message(err).c_str(), err);
     }
     //else if (CORE->created && NULL != CORE->sem) // If only created in this process, remove it.
     //{
     //    int rv = ::sem_unlink(CORE->name.empty() ? NULL : CORE->name.c_str());
-    //    CONSOLE("Try to remove semophare of \"%s\", rv: %d, errno: %d.", CORE->name.c_str(), rv, errno);
+    //    err = system::get_last_error();
+    //    CONSOLE("Try to remove semophare of \"%s\", rv: %d, because: %s(%d).", CORE->name.c_str(), rv, system::get_error_message(err).c_str(), err);
     //}
     CORE->sem = NULL;
 }
