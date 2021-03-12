@@ -9,9 +9,15 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
+#if _DEBUG
+#define CONSOLE(fmt, ...) printf("[libipc] " fmt "\n", ##__VA_ARGS__)
+#else
+#define CONSOLE(fmt, ...) // no-op
+#endif // _DEBUG
+
 #define CORE to_pipe_ptr(m_core)
 
-#define PIPE_PREFIX "/var/run/{3A165FEC-9E18-47FF-9CCE-5EDCB4CBE44A}."
+#define PIPE_PREFIX "/var/run/PIPE-"
 
 typedef struct tagPipe
 {
@@ -67,12 +73,16 @@ ipc::unix_pipe::~unix_pipe()
 void ipc::unix_pipe::send(const std::string & target, const void * data, unsigned int size)
 {
     std::string pipeName = PIPE_PREFIX + target;
-    int fd = ::open(pipeName.c_str(), O_WRONLY);
+    CONSOLE("Openning pipe %s", pipeName.c_str());
+    int fd = ::open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
+    CONSOLE("Open return: %d", fd);
     if (-1 == fd)
     {
         throw ipc::pipe_exception(system::get_last_error(), pipeName);
     }
+    CONSOLE("Writting...");
     int rv = ::write(fd, data, size);
+    CONSOLE("Write return: %d", rv);
     if (-1 == rv)
     {
         ::close(fd);
@@ -102,7 +112,9 @@ int read_all(int fd, std::string& container)
     while (true)
     {
         unsigned char buffer[256] = { 0 };
+        CONSOLE("Readding...");
         int readSize = ::read(fd, buffer, sizeof(buffer) / sizeof(*buffer));
+        CONSOLE("Read return: %d", readSize);
         if (readSize < 0)
         {
             return readSize;
