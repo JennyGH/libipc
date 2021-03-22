@@ -36,5 +36,5 @@ ADD_EXECUTABLE(
 # Link external libraries.
 TARGET_LINK_LIBRARIES(
     ${PROJECT_NAME}
-    libipc
+    ipc
 )
