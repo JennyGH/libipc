@@ -6,6 +6,4 @@ ipc::named_mutex_exception::named_mutex_exception(int code)
 {
 }
 
-ipc::named_mutex_exception::~named_mutex_exception() throw()
-{
-}
+ipc::named_mutex_exception::~named_mutex_exception() throw() {}

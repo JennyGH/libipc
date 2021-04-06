@@ -2,7 +2,7 @@
 #include <lockable.h>
 namespace ipc
 {
-    template<class T>
+    template <class T>
     class scoped_lock
     {
     public:
@@ -15,7 +15,8 @@ namespace ipc
         {
             m_lockable.unlock();
         }
+
     private:
         T& m_lockable;
     };
-}
+} // namespace ipc

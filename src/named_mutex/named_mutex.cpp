@@ -1,11 +1,11 @@
 #include "named_mutex.h"
-#if WIN32
+#if _MSC_VER
 #include "windows_named_mutex.h"
 typedef ipc::windows_named_mutex real_type;
 #else
 #include "unix_named_mutex.h"
 typedef ipc::unix_named_mutex real_type;
-#endif // WIN32
+#endif // _MSC_VER
 
 #define CONVERT_TO_REAL_PTR(ptr)\
 static_cast<real_type*>(ptr)

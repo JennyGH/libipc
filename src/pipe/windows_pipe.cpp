@@ -1,6 +1,6 @@
 #include "windows_pipe.h"
 #include "pipe_exception.h"
-#if WIN32
+#if _MSC_VER
 #    include <Windows.h>
 
 #    define CORE to_pipe_ptr(m_core)
@@ -165,4 +165,4 @@ DWORD receive_all(HANDLE hFile, std::string& container)
     return dwReadBytes;
 }
 
-#endif // WIN32
+#endif // _MSC_VER

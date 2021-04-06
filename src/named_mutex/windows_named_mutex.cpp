@@ -1,6 +1,6 @@
 #include "windows_named_mutex.h"
 #include "named_mutex_exception.h"
-#if WIN32
+#if _MSC_VER
 #include <Windows.h>
 
 #define CORE to_real_type_ptr(m_core)
@@ -48,4 +48,4 @@ void ipc::windows_named_mutex::unlock()
 {
     ::ReleaseMutex(CORE->hMutex);
 }
-#endif // WIN32
+#endif // _MSC_VER

@@ -1,7 +1,7 @@
 #include "unix_named_mutex.h"
 #include "named_mutex_exception.h"
 #include "../system.h"
-#if !WIN32
+#if !_MSC_VER
 #include <errno.h>     /* For errno constants */
 #include <fcntl.h>     /* For O_* constants */
 #include <sys/stat.h>  /* For mode constants */
@@ -109,4 +109,4 @@ void ipc::unix_named_mutex::unlock()
     }
     ::sem_post(CORE->sem);
 }
-#endif // !WIN32
+#endif // !_MSC_VER

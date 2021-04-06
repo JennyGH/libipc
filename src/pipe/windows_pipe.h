@@ -2,7 +2,7 @@
 #include <string>
 namespace ipc
 {
-#if WIN32
+#if _MSC_VER
     class windows_pipe
     {
     public:
@@ -20,5 +20,5 @@ namespace ipc
     private:
         void* m_core;
     };
-#endif // WIN32
+#endif // _MSC_VER
 }

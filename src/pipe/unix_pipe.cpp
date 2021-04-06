@@ -1,23 +1,23 @@
 #include "unix_pipe.h"
 #include "pipe_exception.h"
 #include "../system.h"
-#if !WIN32
-#include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdio.h>
+#if !_MSC_VER
+#    include <errno.h>
+#    include <fcntl.h>
+#    include <unistd.h>
+#    include <sys/types.h>
+#    include <sys/stat.h>
+#    include <stdio.h>
 
-#if _DEBUG
-#define CONSOLE(fmt, ...) printf("[libipc] " fmt "\n", ##__VA_ARGS__)
-#else
-#define CONSOLE(fmt, ...) // no-op
-#endif // _DEBUG
+#    ifndef NDEBUG
+#        define CONSOLE(fmt, ...) printf("[libipc] " fmt "\n", ##__VA_ARGS__)
+#    else
+#        define CONSOLE(fmt, ...) // no-op
+#    endif                        // !NDEBUG
 
-#define CORE to_pipe_ptr(m_core)
+#    define CORE to_pipe_ptr(m_core)
 
-#define PIPE_PREFIX "/var/run/PIPE-"
+#    define PIPE_PREFIX "/var/run/PIPE-"
 
 typedef struct tagPipe
 {
@@ -32,17 +32,17 @@ static inline pipe_ptr_t to_pipe_ptr(void* ptr)
 
 static int read_all(int fd, std::string& container);
 
-ipc::unix_pipe::unix_pipe(const std::string & name)
+ipc::unix_pipe::unix_pipe(const std::string& name)
     : m_core(new pipe_t())
 {
     CORE->name = PIPE_PREFIX + name;
     if (::access(CORE->name.c_str(), F_OK))
     {
         // File not exist.
-        //printf("%s not exist.\n", CORE->name.c_str());
+        // printf("%s not exist.\n", CORE->name.c_str());
         // Create it.
         int rv = ::mkfifo(CORE->name.c_str(), 0666);
-        //printf("mkfifo: %d\n", rv);
+        // printf("mkfifo: %d\n", rv);
         if (0 != rv)
         {
             throw ipc::pipe_exception(system::get_last_error(), name);
@@ -53,7 +53,7 @@ ipc::unix_pipe::unix_pipe(const std::string & name)
     {
         CORE->fd = ::open(CORE->name.c_str(), O_CREAT | O_RDWR);
     }
-    //printf("CORE->fd: %d\n", CORE->fd);
+    // printf("CORE->fd: %d\n", CORE->fd);
     if (-1 == CORE->fd)
     {
         throw ipc::pipe_exception(system::get_last_error(), name);
@@ -70,7 +70,10 @@ ipc::unix_pipe::~unix_pipe()
     }
 }
 
-void ipc::unix_pipe::send(const std::string & target, const void * data, unsigned int size)
+void ipc::unix_pipe::send(
+    const std::string& target,
+    const void*        data,
+    unsigned int       size)
 {
     std::string pipeName = PIPE_PREFIX + target;
     CONSOLE("Openning pipe %s", pipeName.c_str());
@@ -111,7 +114,7 @@ int read_all(int fd, std::string& container)
     int totalReadSize = 0;
     while (true)
     {
-        unsigned char buffer[256] = { 0 };
+        unsigned char buffer[256] = {0};
         CONSOLE("Readding...");
         int readSize = ::read(fd, buffer, sizeof(buffer) / sizeof(*buffer));
         CONSOLE("Read return: %d", readSize);
@@ -129,4 +132,4 @@ int read_all(int fd, std::string& container)
     return totalReadSize;
 }
 
-#endif // !WIN32
+#endif // !_MSC_VER

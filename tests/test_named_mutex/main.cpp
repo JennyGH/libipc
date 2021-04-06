@@ -11,7 +11,7 @@ try
 
     ipc::scoped_lock<ipc::named_mutex> lock(mutex);
 
-    //mutex.lock();
+    // mutex.lock();
     return 0;
 }
 catch (const std::exception& ex)
