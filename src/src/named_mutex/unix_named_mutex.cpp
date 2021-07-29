@@ -1,6 +1,6 @@
-#include "unix_named_mutex.h"
-#include "named_mutex_exception.h"
-#include "../system.h"
+#include "named_mutex/unix_named_mutex.h"
+#include "named_mutex/named_mutex_exception.h"
+#include "system.h"
 #if !_MSC_VER
 #include <errno.h>     /* For errno constants */
 #include <fcntl.h>     /* For O_* constants */

@@ -1,6 +1,7 @@
 [B|b]uild*/
+[B|b]uilt*/
+[D|d]ev*/
+[O|o]bj*/
 .vs/
 .svn/
 .vscode/
-obj/
-/built

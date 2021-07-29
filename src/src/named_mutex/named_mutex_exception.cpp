@@ -1,4 +1,4 @@
-#include "named_mutex_exception.h"
+#include "named_mutex/named_mutex_exception.h"
 #include "system.h"
 
 ipc::named_mutex_exception::named_mutex_exception(int code)

@@ -1,6 +1,6 @@
-#include "unix_pipe.h"
-#include "pipe_exception.h"
-#include "../system.h"
+#include "pipe/unix_pipe.h"
+#include "pipe/pipe_exception.h"
+#include "system.h"
 #if !_MSC_VER
 #    include <errno.h>
 #    include <fcntl.h>

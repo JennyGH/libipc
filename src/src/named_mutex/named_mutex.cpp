@@ -1,9 +1,9 @@
-#include "named_mutex.h"
+#include "named_mutex/named_mutex.h"
 #if _MSC_VER
-#include "windows_named_mutex.h"
+#include "named_mutex/windows_named_mutex.h"
 typedef ipc::windows_named_mutex real_type;
 #else
-#include "unix_named_mutex.h"
+#include "named_mutex/unix_named_mutex.h"
 typedef ipc::unix_named_mutex real_type;
 #endif // _MSC_VER
 

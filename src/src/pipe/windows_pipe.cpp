@@ -1,5 +1,5 @@
-#include "windows_pipe.h"
-#include "pipe_exception.h"
+#include "pipe/windows_pipe.h"
+#include "pipe/pipe_exception.h"
 #if _MSC_VER
 #    include <Windows.h>
 

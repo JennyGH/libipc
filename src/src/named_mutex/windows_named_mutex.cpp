@@ -1,5 +1,5 @@
-#include "windows_named_mutex.h"
-#include "named_mutex_exception.h"
+#include "named_mutex/windows_named_mutex.h"
+#include "named_mutex/named_mutex_exception.h"
 #if _MSC_VER
 #include <Windows.h>
 

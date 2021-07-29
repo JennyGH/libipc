@@ -1,9 +1,9 @@
-#include "pipe.h"
+#include "pipe/pipe.h"
 #if _MSC_VER
-#    include "windows_pipe.h"
+#    include "pipe/windows_pipe.h"
 typedef ipc::windows_pipe real_type;
 #else
-#    include "unix_pipe.h"
+#    include "pipe/unix_pipe.h"
 typedef ipc::unix_pipe real_type;
 #endif // _MSC_VER
 
