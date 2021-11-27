@@ -17,7 +17,7 @@
 
 #    define CORE to_pipe_ptr(m_core)
 
-#    define PIPE_PREFIX "/var/run/PIPE-"
+#    define PIPE_PREFIX "/tmp/PIPE-"
 
 typedef struct tagPipe
 {
@@ -39,21 +39,21 @@ ipc::unix_pipe::unix_pipe(const std::string& name)
     if (::access(CORE->name.c_str(), F_OK))
     {
         // File not exist.
-        // printf("%s not exist.\n", CORE->name.c_str());
+        CONSOLE("%s not exist.", CORE->name.c_str());
         // Create it.
         int rv = ::mkfifo(CORE->name.c_str(), 0666);
-        // printf("mkfifo: %d\n", rv);
+        CONSOLE("mkfifo: %d", rv);
         if (0 != rv)
         {
             throw ipc::pipe_exception(system::get_last_error(), name);
         }
-        CORE->fd = ::open(CORE->name.c_str(), O_RDWR);
+        CORE->fd = ::open(CORE->name.c_str(), O_RDWR, S_IRWXG | S_IRWXO | S_IRWXU);
     }
     else
     {
-        CORE->fd = ::open(CORE->name.c_str(), O_CREAT | O_RDWR);
+        CORE->fd = ::open(CORE->name.c_str(), O_CREAT | O_RDWR, S_IRWXG | S_IRWXO | S_IRWXU);
     }
-    // printf("CORE->fd: %d\n", CORE->fd);
+    CONSOLE("CORE->fd: %d", CORE->fd);
     if (-1 == CORE->fd)
     {
         throw ipc::pipe_exception(system::get_last_error(), name);
@@ -70,10 +70,7 @@ ipc::unix_pipe::~unix_pipe()
     }
 }
 
-void ipc::unix_pipe::send(
-    const std::string& target,
-    const void*        data,
-    unsigned int       size)
+void ipc::unix_pipe::send(const std::string& target, const void* data, unsigned int size)
 {
     std::string pipeName = PIPE_PREFIX + target;
     CONSOLE("Openning pipe %s", pipeName.c_str());
